@@ -1,10 +1,9 @@
-<!DOCTYPE html>
+‎<!DOCTYPE html>
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>AI Code</title>
-
+<title>Gemini HTML IDE</title>
 <style>
 *{
 box-sizing:border-box;
@@ -12,60 +11,13 @@ margin:0;
 padding:0;
 font-family:-apple-system,BlinkMacSystemFont,sans-serif;
 }
-
 body{
 height:100vh;
 display:flex;
 flex-direction:column;
 background:#fff;
-overflow: hidden;
 }
-
-/* 共通タブバーのスタイル */
-.tab-bar {
-display: flex;
-background: #333;
-padding: 5px 10px 0 10px;
-border-bottom: 1px solid #222;
-}
-
-.tab-button {
-background: #555;
-color: #ccc;
-border: none;
-padding: 10px 20px;
-cursor: pointer;
-border-radius: 8px 8px 0 0;
-margin-right: 5px;
-font-size: 14px;
-transition: background 0.2s, color 0.2s;
-}
-
-.tab-button:hover {
-background: #666;
-color: #fff;
-}
-
-.tab-button.active {
-background: #fff;
-color: #333;
-font-weight: bold;
-}
-
-/* アプリコンテナのスタイル */
-.app-container {
-display: none;
-flex: 1;
-flex-direction: column;
-overflow: hidden;
-}
-
-.app-container.active {
-display: flex;
-}
-
-/* --- アプリ1 (Gemini HTML IDE) のスタイル --- */
-.app1-toolbar{
+.toolbar{
 height:60px;
 display:flex;
 align-items:center;
@@ -73,8 +25,7 @@ padding:12px;
 border-bottom:1px solid #ddd;
 gap:20px;
 }
-
-.app1-btn{
+button{
 padding:10px 16px;
 border:none;
 border-radius:10px;
@@ -82,30 +33,25 @@ background:#007aff;
 color:#fff;
 cursor:pointer;
 }
-
-.app1-input{
+input{
 padding:10px;
 border:1px solid #ccc;
 border-radius:10px;
 }
-
-.app1-main{
+.main{
 flex:1;
 display:flex;
 overflow:hidden;
 }
-
-.app1-panel{
+.panel{
 border-right:1px solid #ddd;
 display:flex;
 flex-direction:column;
 }
-
-.app1-chat{width:30%;}
-.app1-editor{width:35%;}
-.app1-preview{width:35%;}
-
-.app1-messages{
+.chat{width:30%;}
+.editor{width:35%;}
+.preview{width:35%;}
+.messages{
 flex:1;
 overflow:auto;
 padding:16px;
@@ -113,25 +59,21 @@ display:flex;
 flex-direction:column;
 gap:12px;
 }
-
-.app1-msg{
+.msg{
 padding:12px;
 border-radius:14px;
 max-width:80%;
 }
-
-.app1-user{
+.user{
 background:#007aff;
 color:#fff;
 align-self:flex-end;
 }
-
-.app1-ai{
+.ai{
 background:#eee;
 align-self:flex-start;
 }
-
-.app1-textarea{
+textarea{
 flex:1;
 border:none;
 outline:none;
@@ -140,191 +82,55 @@ font-family:monospace;
 font-size:14px;
 resize:none;
 }
-
-.app1-iframe{
+iframe{
 width:100%;
 height:100%;
 border:none;
 }
-
-.app1-bottom{
+.bottom{
 padding:12px;
 border-top:1px solid #ddd;
 display:flex;
 gap:10px;
 }
-
-/* --- アプリ2 (Code学習) のスタイル --- */
-.app2-header {
-display: flex;
-align-items: center;
-justify-content: space-between;
-background: #f5f5f5;
-border-bottom: 1px solid #ccc;
-padding: 8px 12px;
-position: relative;
-height: 50px;
-}
-
-#app2-undoRedo button {
-background-color: #007AFF;
-color: white;
-border: none;
-font-size: 1em;
-padding: 6px 12px;
-border-radius: 4px;
-margin-right: 6px;
-box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-transition: transform 0.1s, box-shadow 0.2s;
-cursor: pointer;
-}
-#app2-undoRedo button:hover {
-transform: scale(1.05);
-box-shadow: 0 3px 6px rgba(0,0,0,0.25);
-}
-#app2-redoBtn {
-background-color: #28A745;
-}
-#app2-undoRedo button:disabled {
-background-color: #aaa;
-color: #eee;
-box-shadow: none;
-transform: none;
-cursor: not-allowed;
-}
-
-.app2-header .title {
-position: absolute;
-left: 50%;
-transform: translateX(-50%);
-font-weight: bold;
-font-size: 1.2em;
-}
-
-.app2-main {
-flex: 1;
-display: flex;
-height: 100%;
-overflow: hidden;
-}
-#app2-editorContainer, #app2-previewContainer {
-flex: 1;
-display: flex;
-flex-direction: column;
-height: 100%;
-}
-#app2-editorContainer {
-border-right: 1px solid #ccc;
-}
-.app2-textarea {
-flex: 1;
-width: 100%;
-box-sizing: border-box;
-font-family: monospace;
-padding: 10px;
-resize: none;
-border: none;
-outline: none;
-}
-.app2-iframe {
-flex: 1;
-width: 100%;
-border: none;
-}
 </style>
 </head>
-
 <body>
-
-<div class="tab-bar">
-<button class="tab-button active" onclick="switchTab('app1')">AI Code</button>
-<button class="tab-button" onclick="switchTab('app2')">Code学習</button>
-</div>
-
-<div id="app1" class="app-container active">
-<div class="app1-toolbar">
-<input id="app1-apikey" class="app1-input" placeholder="Gemini API Key" style="width:250px;">
-<button class="app1-btn" onclick="app1_saveKey()">保存</button>
-
+<div class="toolbar">
+<input id="apikey" placeholder="Gemini API Key" style="width:250px;">
+<button onclick="saveKey()">保存</button>
 <div style="flex:1;text-align:center;">
-<button class="app1-btn" onclick="app1_resetApp()">リセット</button>
-<button class="app1-btn" onclick="app1_undo()">戻る</button>
-<button class="app1-btn" onclick="app1_redo()">進む</button>
+<button onclick="resetApp()">リセット</button>
+<button onclick="undo()">戻る</button>
+<button onclick="redo()">進む</button>
 </div>
-
-<button class="app1-btn" onclick="app1_shareHTML()">共有</button>
+<button onclick="shareHTML()">共有</button>
 </div>
-
-<div class="app1-main">
-<div class="app1-panel app1-chat">
-<div class="app1-messages" id="app1-messages"></div>
-<div class="app1-bottom">
-<input id="app1-chatInput" class="app1-input" placeholder="Geminiへ指示" style="flex:1;">
-<button class="app1-btn" onclick="app1_sendToGemini()">送信</button>
+<div class="main">
+<div class="panel chat">
+<div class="messages" id="messages"></div>
+<div class="bottom">
+<input id="chatInput" placeholder="Geminiへ指示" style="flex:1;">
+<button onclick="sendToGemini()">送信</button>
 </div>
 </div>
-
-<div class="app1-panel app1-editor">
-<textarea id="app1-editor" class="app1-textarea"></textarea>
+<div class="panel editor">
+<textarea id="editor"></textarea>
 </div>
-
-<div class="app1-panel app1-preview">
-<iframe id="app1-preview" class="app1-iframe"></iframe>
+<div class="panel preview">
+<iframe id="preview"></iframe>
 </div>
 </div>
-</div>
-
-<div id="app2" class="app-container">
-<header class="app2-header">
-<div id="app2-undoRedo">
-<button id="app2-undoBtn" title="元に戻す">⤺ 戻る</button>
-<button id="app2-redoBtn" title="やり直す">進む ⤻</button>
-</div>
-<div class="title">HTMLエディタ＆プレビュー</div>
-</header>
-
-<main class="app2-main">
-<div id="app2-editorContainer">
-<textarea id="app2-editor" class="app2-textarea"><!DOCTYPE html>
-<html>
-<body>
-<h1>Hello, World!</h1>
-<p>このエディタで編集すると右側にリアルタイムで反映されます。</p>
-</body>
-</html></textarea>
-</div>
-<div id="app2-previewContainer">
-<iframe id="app2-preview" class="app2-iframe"></iframe>
-</div>
-</main>
-</div>
-
 <script>
-// --- タブ切り替えロジック ---
-function switchTab(appId) {
-// すべてのコンテナとタブボタンから active クラスを削除
-document.querySelectorAll('.app-container').forEach(el => el.classList.remove('active'));
-document.querySelectorAll('.tab-button').forEach(el => el.classList.remove('active'));
-
-// 選択されたアプリとボタンに active クラスを追加
-document.getElementById(appId).classList.add('active');
-event.currentTarget.classList.add('active');
-}
-
-// ==========================================
-// アプリ1 (Gemini HTML IDE) ロジック
-// ==========================================
-let app1_apiKey = localStorage.getItem("gemini_api_key") || "";
-let app1_chat = JSON.parse(localStorage.getItem("chat") || "[]");
-let app1_history = [];
-let app1_historyIndex = -1;
-
-const app1_editor = document.getElementById("app1-editor");
-const app1_preview = document.getElementById("app1-preview");
-const app1_messages = document.getElementById("app1-messages");
-const app1_apikeyInput = document.getElementById("app1-apikey");
-
-const app1_defaultHTML = `<!DOCTYPE html>
+let apiKey = localStorage.getItem("gemini_api_key") || "";
+let chat = JSON.parse(localStorage.getItem("chat") || "[]");
+let history = [];
+let historyIndex = -1;
+const editor = document.getElementById("editor");
+const preview = document.getElementById("preview");
+const messages = document.getElementById("messages");
+const apikeyInput = document.getElementById("apikey"); // 共通変数として取得
+const defaultHTML = `<!DOCTYPE html>
 <html>
 <body style="
 display:flex;
@@ -338,228 +144,147 @@ font-weight:bold;
 Hello, World!
 </body>
 </html>`;
-
-app1_apikeyInput.value = app1_apiKey;
-app1_editor.value = localStorage.getItem("html") || app1_defaultHTML;
-
-// アプリ1初期化
-app1_renderPreview();
-app1_renderChat();
-app1_saveHistory();
-
-app1_apikeyInput.addEventListener("input", () => {
-app1_apiKey = app1_apikeyInput.value.trim();
-localStorage.setItem("gemini_api_key", app1_apiKey);
+apikeyInput.value = apiKey;
+editor.value = localStorage.getItem("html") || defaultHTML;
+renderPreview();
+renderChat();
+saveHistory();
+// 【追加】キーボードで入力・貼り付けした瞬間に自動でLocalStorageに保存する処理
+apikeyInput.addEventListener("input", () => {
+    apiKey = apikeyInput.value.trim();
+    localStorage.setItem("gemini_api_key", apiKey);
 });
-
-function app1_saveKey(){
-app1_apiKey = app1_apikeyInput.value.trim();
-if(!app1_apiKey){
+function saveKey(){
+apiKey = apikeyInput.value.trim();
+if(!apiKey){
 alert("APIキーを入力してください");
 return;
 }
-localStorage.setItem("gemini_api_key", app1_apiKey);
+localStorage.setItem("gemini_api_key", apiKey);
 alert("APIキー保存しました");
 }
-
-function app1_renderPreview(){
-app1_preview.srcdoc = app1_editor.value;
-localStorage.setItem("html", app1_editor.value);
+function renderPreview(){
+preview.srcdoc = editor.value;
+localStorage.setItem("html", editor.value);
 }
-
-app1_editor.addEventListener("input", ()=>{
-app1_renderPreview();
-app1_saveHistory();
+editor.addEventListener("input", ()=>{
+renderPreview();
+saveHistory();
 });
-
-function app1_saveHistory(){
-if(app1_history[app1_history.length - 1] !== app1_editor.value){
-app1_history.push(app1_editor.value);
-app1_historyIndex = app1_history.length - 1;
+function saveHistory(){
+if(history[history.length - 1] !== editor.value){
+history.push(editor.value);
+historyIndex = history.length - 1;
 }
 }
-
-function app1_undo(){
-if(app1_historyIndex > 0){
-app1_historyIndex--;
-app1_editor.value = app1_history[app1_historyIndex];
-app1_renderPreview();
+function undo(){
+if(historyIndex > 0){
+historyIndex--;
+editor.value = history[historyIndex];
+renderPreview();
 }
 }
-
-function app1_redo(){
-if(app1_historyIndex < app1_history.length - 1){
-app1_historyIndex++;
-app1_editor.value = app1_history[app1_historyIndex];
-app1_renderPreview();
+function redo(){
+if(historyIndex < history.length - 1){
+historyIndex++;
+editor.value = history[historyIndex];
+renderPreview();
 }
 }
-
-function app1_renderChat(){
-app1_messages.innerHTML = "";
-app1_chat.forEach(m=>{
+function renderChat(){
+messages.innerHTML = "";
+chat.forEach(m=>{
 const div = document.createElement("div");
-div.className = "app1-msg " + (m.user ? "app1-user" : "app1-ai");
+div.className = "msg " + (m.user ? "user" : "ai");
 div.textContent = m.text;
-app1_messages.appendChild(div);
+messages.appendChild(div);
 });
-app1_messages.scrollTop = app1_messages.scrollHeight;
-localStorage.setItem("chat", JSON.stringify(app1_chat));
+messages.scrollTop = messages.scrollHeight;
+localStorage.setItem("chat", JSON.stringify(chat));
 }
-
-function app1_resetApp(){
-app1_chat = [];
-app1_editor.value = app1_defaultHTML;
-app1_history = [];
-app1_historyIndex = -1;
-app1_saveHistory();
-app1_renderPreview();
-app1_renderChat();
+function resetApp(){
+chat = [];
+editor.value = defaultHTML;
+history = [];
+historyIndex = -1;
+saveHistory();
+renderPreview();
+renderChat();
 localStorage.removeItem("chat");
 localStorage.removeItem("html");
 }
-
-function app1_shareHTML(){
-navigator.clipboard.writeText(app1_editor.value);
+function shareHTML(){
+navigator.clipboard.writeText(editor.value);
 alert("HTMLコピーしました");
 }
-
-function app1_extractHTML(text){
+function extractHTML(text){
 const m = text.match(/```html([\s\S]*?)```/);
 return m ? m[1].trim() : null;
 }
-
-async function app1_sendToGemini(){
-if(!app1_apiKey){
+async function sendToGemini(){
+if(!apiKey){
 alert("APIキーを設定してください");
 return;
 }
-const input = document.getElementById("app1-chatInput");
+const input = document.getElementById("chatInput");
 const prompt = input.value.trim();
 if(!prompt) return;
-
-app1_chat.push({ user:true, text:prompt });
-app1_renderChat();
+chat.push({ user:true, text:prompt });
+renderChat();
 input.value="";
-
-app1_chat.push({ user:false, text:"Geminiが考え中..." });
-app1_renderChat();
-
+chat.push({ user:false, text:"Geminiが考え中..." });
+renderChat();
 try{
 const MAX_LEN = 8000;
-const safeHTML = app1_editor.value.length > MAX_LEN ? app1_editor.value.slice(0, MAX_LEN) + "\n...(省略)" : app1_editor.value;
-
+const safeHTML =
+editor.value.length > MAX_LEN
+? editor.value.slice(0, MAX_LEN) + "\n...(省略)"
+: editor.value;
 const res = await fetch(
-`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${app1_apiKey}`,
+`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
 {
 method:"POST",
 headers:{ "Content-Type":"application/json" },
 body: JSON.stringify({
 contents:[{
 role:"user",
-parts:[{ text:`現在HTML:\n${safeHTML}\n\n指示:\n${prompt}` }]
+parts:[{
+text:`現在HTML:\n${safeHTML}\n\n指示:\n${prompt}`
+}]
 }],
 systemInstruction:{
-parts:[{ text:"HTML/CSS専門家。必ず完全HTMLを```html```で返す" }]
+parts:[{
+text:"HTML/CSS専門家。必ず完全HTMLを```html```で返す"
+}]
 }
 })
 }
 );
-
 if(!res.ok){
 const text = await res.text();
 throw new Error(text);
 }
-
 const data = await res.json();
-app1_chat.pop();
-
+chat.pop();
 const reply = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
-const code = app1_extractHTML(reply);
-
+const code = extractHTML(reply);
 if(code){
-app1_editor.value = code;
-app1_renderPreview();
-app1_saveHistory();
-app1_chat.push({ user:false, text:"HTMLを更新しました" });
+editor.value = code;
+renderPreview();
+saveHistory();
+chat.push({ user:false, text:"HTMLを更新しました" });
 }else{
-app1_chat.push({ user:false, text:"HTML抽出に失敗しました" });
+chat.push({ user:false, text:"HTML抽出に失敗しました" });
 }
 }catch(e){
-app1_chat.pop();
-app1_chat.push({ user:false, text:"エラー:\n" + e.message });
-}
-app1_renderChat();
-}
-
-
-// ==========================================
-// アプリ2 (Code学習) ロジック
-// ==========================================
-const app2_editor = document.getElementById("app2-editor");
-const app2_preview = document.getElementById("app2-preview");
-const app2_undoBtn = document.getElementById("app2-undoBtn");
-const app2_redoBtn = document.getElementById("app2-redoBtn");
-
-let app2_history = [];
-let app2_index = -1;
-
-function app2_saveToHistory() {
-const current = app2_editor.value;
-if (app2_history[app2_index] !== current) {
-app2_history = app2_history.slice(0, app2_index + 1);
-app2_history.push(current);
-app2_index = app2_history.length - 1;
-app2_updateButtons();
-localStorage.setItem("savedHTML", current);
-}
-}
-
-function app2_undo() {
-if (app2_index > 0) {
-app2_index--;
-app2_editor.value = app2_history[app2_index];
-app2_updateButtons();
-app2_updatePreview();
-}
-}
-
-function app2_redo() {
-if (app2_index < app2_history.length - 1) {
-app2_index++;
-app2_editor.value = app2_history[app2_index];
-app2_updateButtons();
-app2_updatePreview();
-}
-}
-
-function app2_updateButtons() {
-app2_undoBtn.disabled = app2_index <= 0;
-app2_redoBtn.disabled = app2_index >= app2_history.length - 1;
-}
-
-function app2_updatePreview() {
-app2_preview.srcdoc = app2_editor.value;
-}
-
-// アプリ2初期化 (window.onloadの代わりに直接実行)
-const app2_saved = localStorage.getItem("savedHTML");
-if (app2_saved) app2_editor.value = app2_saved;
-app2_saveToHistory();
-app2_updatePreview();
-
-let app2_typingTimer;
-app2_editor.addEventListener("input", () => {
-clearTimeout(app2_typingTimer);
-app2_typingTimer = setTimeout(() => {
-app2_saveToHistory();
-app2_updatePreview();
-}, 300);
+chat.pop();
+chat.push({
+user:false,
+text:"エラー:\n" + e.message
 });
-
-app2_undoBtn.onclick = app2_undo;
-app2_redoBtn.onclick = app2_redo;
+}
+renderChat();
+}
 </script>
-
 </body>
 </html>
